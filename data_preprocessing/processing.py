@@ -10,7 +10,7 @@ class DataPreprocessor:
     The class is responsiple of all preprocessing Stages: DataAugmentation data loader and visualization
 
     """
-    def __init__(self, data_path, batch_size=32, train_ratio=0.7, val_ratio=0.15, test_ratio=0.15):
+    def __init__(self, data_path, transforms=None,batch_size=32, train_ratio=0.7, val_ratio=0.15, test_ratio=0.15):
         """
         The data will be splitted into: 70% training, 15% Validation, 15% testing
         Constructor Variables:
@@ -36,14 +36,15 @@ class DataPreprocessor:
              - https://pytorch.org/vision/stable/transforms.html
 
         """
-        self.transform = transforms.Compose([
-            transforms.Resize((128, 128)),  
-            transforms.RandomHorizontalFlip(p=0.5),  
-            transforms.RandomRotation(degrees=45),  
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        ])
-        self.dataset = datasets.ImageFolder(root=self.data_path, transform=self.transform)
+        if transforms is None:
+            transforms = transforms.Compose([
+                transforms.Resize((128, 128)),
+                transforms.RandomHorizontalFlip(p=0.5),
+                transforms.RandomRotation(degrees=45),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            ])
+        self.dataset = datasets.ImageFolder(root=self.data_path, transform= transforms)
     
     def prepare_data(self):
 
