@@ -1,6 +1,7 @@
 import numpy as np
 from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torchvision import datasets
+from torchvision.transforms import v2
 import matplotlib.pyplot as plt
 from PIL import Image
 
@@ -37,12 +38,12 @@ class DataPreprocessor:
 
         """
         if transforms is None:
-            transforms = transforms.Compose([
-                transforms.Resize((128, 128)),
-                transforms.RandomHorizontalFlip(p=0.5),
-                transforms.RandomRotation(degrees=45),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms = v2.Compose([
+                v2.Resize((128, 128)),
+                v2.RandomHorizontalFlip(p=0.5),
+                v2.RandomRotation(degrees=45),
+                v2.ToTensor(),
+                v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             ])
         self.dataset = datasets.ImageFolder(root=self.data_path, transform= transforms)
         self.test_dataset = datasets.ImageFolder(root=self.test_data_path, transform=transforms)
