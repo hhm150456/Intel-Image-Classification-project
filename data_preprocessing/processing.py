@@ -10,7 +10,7 @@ class DataPreprocessor:
     The class is responsiple of all preprocessing Stages: DataAugmentation data loader and visualization
 
     """
-    def __init__(self, data_path, transforms=None,batch_size=32, train_ratio=0.7, val_ratio=0.15, test_ratio=0.15):
+    def __init__(self, data_path, test_data_path, transforms=None, batch_size=32, train_ratio=0.8, val_ratio=0.2):
         """
         The data will be splitted into: 70% training, 15% Validation, 15% testing
         Constructor Variables:
@@ -20,10 +20,10 @@ class DataPreprocessor:
 
         """
         self.data_path = data_path
+        self.test_data_path = test_data_path
         self.batch_size = batch_size
         self.train_ratio = train_ratio
         self.val_ratio = val_ratio
-        self.test_ratio = test_ratio
         """
         TRansformation and Data Augmentation part:
             - change the size of data to be all in 128*128
@@ -45,6 +45,8 @@ class DataPreprocessor:
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             ])
         self.dataset = datasets.ImageFolder(root=self.data_path, transform= transforms)
+        self.test_dataset = datasets.ImageFolder(root=self.test_data_path, transform=transforms)
+
     
     def prepare_data(self):
 
@@ -62,14 +64,13 @@ class DataPreprocessor:
         """
         total_size = len(self.dataset)
         train_size = int(self.train_ratio * total_size)
-        val_size = int(self.val_ratio * total_size)
-        test_size = total_size - train_size - val_size
-        
-        train_dataset, val_dataset, test_dataset = random_split(self.dataset, [train_size, val_size, test_size])
-        
+        val_size = total_size - train_size
+
+        train_dataset, val_dataset  = random_split(self.dataset, [train_size, val_size])
+
         train_loader = DataLoader(train_dataset, batch_size = self.batch_size, shuffle = True)
         val_loader = DataLoader(val_dataset, batch_size = self.batch_size, shuffle = False)
-        test_loader = DataLoader(test_dataset, batch_size = self.batch_size, shuffle = False)
+        test_loader = DataLoader(self.test_dataset, batch_size = self.batch_size, shuffle = False)
         
         return train_loader, val_loader, test_loader
     
