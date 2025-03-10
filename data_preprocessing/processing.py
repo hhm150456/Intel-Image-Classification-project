@@ -48,6 +48,8 @@ class DataPreprocessor:
         self.dataset = datasets.ImageFolder(root=self.data_path, transform= transforms)
         self.test_dataset = datasets.ImageFolder(root=self.test_data_path, transform=transforms)
 
+    def get_dataset(self):
+        return self.dataset, self.test_dataset
     
     def prepare_data(self):
 
